@@ -1,75 +1,97 @@
 import React, { useState } from 'react';
-import './styles.css';
 
 function App() {
   const [input, setInput] = useState('');
-  const [response, setResponse] = useState('');
+  const [prediction, setPrediction] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handlePredict = async () => {
     setLoading(true);
-    setResponse('Thinking...');
+    setError('');
+    setPrediction('');
 
     try {
-      const result = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
+      const res = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
         },
         body: JSON.stringify({
-          model: 'try {
-  // Try GPT-4
-} catch {
-  // Fallback to GPT-3.5
-}
-',
+          model: "gpt-4",
           messages: [
             {
-              role: 'system',
-              content: 'You are JudgeGPT UK, a top legal assistant for UK law. You reply with a legal analysis using IRAC format and give a realistic chance of winning in court in % based on UK precedent.',
+              role: "system",
+              content: "You're a UK legal assistant. Predict court success using IRAC format and similar case stats.",
             },
-            { role: 'user', content: input },
+            {
+              role: "user",
+              content: input,
+            },
           ],
         }),
       });
 
-      const data = await result.json();
+      const data = await res.json();
 
-      if (data.error) {
-        setResponse('❌ Error: ' + data.error.message);
+      if (data.error?.message?.includes("model")) {
+        // Fallback to GPT-3.5
+        const fallback = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
+          },
+          body: JSON.stringify({
+            model: "gpt-3.5-turbo",
+            messages: [
+              {
+                role: "system",
+                content: "You're a UK legal assistant. Predict court success using IRAC format and similar case stats.",
+              },
+              {
+                role: "user",
+                content: input,
+              },
+            ],
+          }),
+        });
+
+        const fallbackData = await fallback.json();
+        setPrediction(fallbackData.choices?.[0]?.message?.content || "No response.");
       } else {
-        const message = data.choices?.[0]?.message?.content || '⚠️ No response from model.';
-        setResponse(message);
+        setPrediction(data.choices?.[0]?.message?.content || "No response.");
       }
     } catch (err) {
-      setResponse('❌ Network error or invalid API key');
+      setError("❌ Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
     <div className="container">
       <h1>⚖️ JudgeGPT UK</h1>
       <p>Enter your legal issue to predict your case outcome:</p>
-      <form onSubmit={handleSubmit}>
-        <textarea
-          rows="5"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="I was stopped by the police for speeding. Can I sue them?"
-          required
-        />
-        <button type="submit" disabled={loading}>
-          {loading ? 'Predicting...' : 'Predict Outcome'}
-        </button>
-      </form>
-      <div className="response">
-        <strong>🧠 Prediction:</strong>
-        <p>{response}</p>
-      </div>
+      <textarea
+        rows="6"
+        cols="50"
+        placeholder="Describe your case here..."
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+      />
+      <br />
+      <button onClick={handlePredict}>Predict Outcome</button>
+
+      {loading && <p>🌀 Calculating...</p>}
+      {error && <p>{error}</p>}
+      {prediction && (
+        <div>
+          <h3>🧠 Prediction:</h3>
+          <pre>{prediction}</pre>
+        </div>
+      )}
     </div>
   );
 }
