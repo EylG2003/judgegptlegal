@@ -100,10 +100,10 @@ function App() {
           <button onClick={exportToPDF}>📄 Export as PDF</button>
           <button
             onClick={() => {
-              const text = `⚖️ My court prediction on JudgeGPT: "${result.slice(
+              const text = `⚖️ My court prediction on JudgeGPT: \"${result.slice(
                 0,
                 200
-              )}..." — Try it here: https://judgegptlegal.vercel.app/`;
+              )}...\" — Try it here: https://judgegptlegal.vercel.app/`;
               const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
               window.open(url, '_blank');
             }}
