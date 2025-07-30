@@ -19,7 +19,12 @@ function App() {
           Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
         },
         body: JSON.stringify({
-          model: 'gpt-3.5-turbo',
+          model: 'try {
+  // Try GPT-4
+} catch {
+  // Fallback to GPT-3.5
+}
+',
           messages: [
             {
               role: 'system',
