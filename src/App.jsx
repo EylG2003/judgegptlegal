@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 
-const judgeImg = '/judge-avatar.png'; // ✅ points to public folder image
-
 export default function App() {
   const [input, setInput] = useState('');
   const [response, setResponse] = useState('');
@@ -25,7 +23,7 @@ export default function App() {
     if (element && window.html2pdf) {
       window.html2pdf().from(element).save();
     } else {
-      alert("PDF generator not loaded or content missing.");
+      alert("PDF content or html2pdf.js not loaded.");
     }
   };
 
@@ -47,13 +45,18 @@ export default function App() {
         padding: '2rem',
         boxShadow: '0 0 40px rgba(0, 255, 200, 0.05)'
       }}>
+        {/* Judge Avatar */}
         <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-          <img src={judgeImg} alt="JudgeGPT Avatar" style={{
-            width: '100px',
-            height: '100px',
-            borderRadius: '12px',
-            boxShadow: '0 0 10px rgba(255,255,255,0.2)'
-          }} />
+          <img
+            src={`${import.meta.env.BASE_URL}judge-avatar2.png`}
+            alt="JudgeGPT Avatar"
+            style={{
+              width: '100px',
+              height: '100px',
+              borderRadius: '12px',
+              boxShadow: '0 0 10px rgba(255,255,255,0.2)'
+            }}
+          />
         </div>
 
         <h1 style={{ fontSize: '2rem', fontWeight: '600', textAlign: 'center', marginBottom: '0.25rem' }}>
@@ -160,12 +163,6 @@ export default function App() {
           }}>
             AI Judge GPT predicts outcomes based on mathematical and statistical analysis of statutory and precedent law — a model designed to improve access to justice, not rely on human instinct or random chance.
           </p>
-        )}
-      </div>
-    </div>
-  );
-}
-
         )}
       </div>
     </div>
