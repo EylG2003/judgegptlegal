@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import judgeImg from './judge-avatar.png'; // rename your uploaded PNG file to match this and put it in /src
+
+const judgeImg = '/judge-avatar.png'; // ✅ points to public folder image
 
 export default function App() {
   const [input, setInput] = useState('');
@@ -47,14 +48,15 @@ export default function App() {
         boxShadow: '0 0 40px rgba(0, 255, 200, 0.05)'
       }}>
         <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-          <img src={judgeImg} alt="JudgeGPT" style={{
+          <img src={judgeImg} alt="JudgeGPT Avatar" style={{
             width: '100px',
             height: '100px',
             borderRadius: '12px',
             boxShadow: '0 0 10px rgba(255,255,255,0.2)'
           }} />
         </div>
-        <h1 style={{ fontSize: '2rem', fontWeight: '600', marginBottom: '0.25rem', textAlign: 'center' }}>
+
+        <h1 style={{ fontSize: '2rem', fontWeight: '600', textAlign: 'center', marginBottom: '0.25rem' }}>
           ⚖️ JudgeGPT UK
         </h1>
         <p style={{ textAlign: 'center', color: '#9ca3af', marginBottom: '0.25rem' }}>
@@ -158,6 +160,12 @@ export default function App() {
           }}>
             AI Judge GPT predicts outcomes based on mathematical and statistical analysis of statutory and precedent law — a model designed to improve access to justice, not rely on human instinct or random chance.
           </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
         )}
       </div>
     </div>
